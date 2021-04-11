@@ -24,18 +24,19 @@ CREATE TABLE EMPLOYEE (
 
 CREATE TABLE POLE
 (
-    POLE_ID 		INTEGER,
-    NEAR_BUSSTOP 	BIT			NOT NULL,
-    NEAR_SCHOOL 	BIT			NOT NULL,
-    NEAR_PARK 		BIT			NOT NULL,
-    NEAR_SIDEWALK 	BIT			NOT NULL,
-    IS_TRAFFIC_POLE BIT			NOT NULL,
-    IS_LIGHT_POLE	BIT			NOT NULL,
-    POLE_STYLE 		VARCHAR(20),
-	POLE_BASE		VARCHAR(20),
-	POLE_HGT 		DECIMAL(4, 2),
-    POLE_LAT    	FLOAT(20)   NOT NULL    	CHECK(POLE_LAT >= 49.0 and POLE_LAT  <= 49.1),
-    POLE_LONG   	FLOAT(20)   NOT NULL    	CHECK(POLE_LONG <= -122.7 and POLE_LONG >= -123.0),
+    POLE_ID 			INTEGER,
+    NEAR_BUSSTOP 		BIT			NOT NULL,
+    NEAR_SCHOOL 		BIT			NOT NULL,
+    NEAR_PARK 			BIT			NOT NULL,
+    NEAR_SIDEWALK 		BIT			NOT NULL,
+    IS_TRAFFIC_POLE		BIT			NOT NULL,
+    IS_LIGHT_POLE		BIT			NOT NULL,
+	POLE_ESTIMATED_AGE	INT, 
+    POLE_STYLE 			VARCHAR(20),
+	POLE_BASE			VARCHAR(20),
+	POLE_HGT 			DECIMAL(4, 2),
+    POLE_LAT    		FLOAT(20)   NOT NULL    CHECK(POLE_LAT >= 49.0 and POLE_LAT  <= 49.1),
+    POLE_LONG   		FLOAT(20)   NOT NULL    CHECK(POLE_LONG <= -122.7 and POLE_LONG >= -123.0),
     
     PRIMARY KEY(POLE_ID),
     CONSTRAINT POLE_LOCATION UNIQUE(POLE_LONG, POLE_LAT)
@@ -80,7 +81,7 @@ CREATE TABLE MAINT_RECORD
 	POLE_ID 			INTEGER NOT NULL,
 	EMPLOYEE_ID 		INTEGER NOT NULL,
 	MAINT_RECORD_DATE 	DATE 	NOT NULL,
-	IS_SERVICE 		BIT		NOT NULL,
+	IS_SERVICE 			BIT		NOT NULL,
     IS_ASSESSMENT 		BIT		NOT NULL,
 	MAINT_ESTIMATED_AGE INT,
 	
@@ -119,16 +120,16 @@ CREATE TABLE MAINT_CONDITION
 GO
 
 INSERT INTO EMPLOYEE (EMPLOYEE_FNAME, EMPLOYEE_LNAME) VALUES -- <COMMAND> <TABLE_NAME> <list, of, variables, to, insert> <VALUES>
-('John', 'Doe'), -- values to go into <list, of, variables, to, insert>
-('Sean', 'Yue'), -- can insert multiple values from one INSERT TO command
-('Ryan', 'Odribege'),
-('Jan', 'Doe'),
-('Denise', 'Chew'),
-('Christine', 'Le'),
-('Jordan', 'Godau'),
-('Bhupesh', 'Duggal'),
-('The', 'Batman'),
-('Boba', 'Fett');
+('John', 		'Doe'), -- values to go into <list, of, variables, to, insert>
+('Sean', 		'Yue'), -- can insert multiple values from one INSERT TO command
+('Ryan', 		'Odribege'),
+('Jan', 		'Doe'),
+('Denise', 		'Chew'),
+('Christine', 	'Le'),
+('Jordan', 		'Godau'),
+('Bhupesh', 	'Duggal'),
+('The', 		'Batman'),
+('Boba', 		'Fett');
 
 GO
 
@@ -139,101 +140,106 @@ INSERT INTO POLE
 	POLE_STYLE, POLE_BASE, POLE_HGT, POLE_LAT, POLE_LONG
 ) 
 VALUES
-(1,	1,	1,	1,	1,	1,	1,	'HPS Domus',		'Yes',	6,		49.02922429,	-122.8010562),
-(2,	0,	0,	0,	0,	1,	1,	'HPS Domus',		'Yes',	6,		49.0294399,		-122.8010201),
-(3,	1,	1,	1,	1,	1,	0,	'LED Cobra Head',	'No',	4,		49.02589485,	-122.8013455),
-(4,	0,	1,	1,	1,	1,	0,	'HPS Cobra Head',	'No',	6,		49.0257423,		-122.8010596),
-(5,	0,	1,	0,	1,	1,	0,	'HPS Cobra Head',	'No',	4,		49.0256355,		-122.8011562),
-(6,	0,	0,	0,	0,	1,	1,	'HPS Cobra Head',	'Yes',	6,		49.02567313,	-122.8011125),
-(7,	1,	1,	1,	0,	1,	1,	'HPS Cobra Head',	'Yes',	9.5,	49.0275548,		-122.8095381),
-(8,	1,	0,	1,	1,	0,	1,	'LED Domus',		'Yes',	7.5,	49.02783973,	-122.8093333),
-(9,	1,	1,	1,	1,	0,	1,	'LED Domus',		'Yes',	7.5,	49.02895828,	-122.8092151),
-(10,	1,	0,	0,	0,	0,	1,	'LED Domus',	'Yes',	7.5,	49.02761232,	-122.805421)
+(1,		1,	1,	1,	1,	1,	1,	'HPS Domus',		'Y',	6,		49.02922429,	-122.8010562),
+(2,		0,	0,	0,	0,	1,	1,	'HPS Domus',		'Y',	6,		49.0294399,		-122.8010201),
+(3,		1,	1,	1,	1,	1,	0,	'LED Cobra Head',	'N',	4,		49.02589485,	-122.8013455),
+(4,		0,	1,	1,	1,	1,	0,	'HPS Cobra Head',	'N',	6,		49.0257423,		-122.8010596),
+(5,		0,	1,	0,	1,	1,	0,	'HPS Cobra Head',	'N',	4,		49.0256355,		-122.8011562),
+(6,		0,	0,	0,	0,	1,	1,	'HPS Cobra Head',	'Y',	6,		49.02567313,	-122.8011125),
+(7,		1,	1,	1,	0,	1,	1,	'HPS Cobra Head',	'Y',	9.5,	49.0275548,		-122.8095381),
+(8,		1,	0,	1,	1,	0,	1,	'LED Domus',		'Y',	7.5,	49.02783973,	-122.8093333),
+(9,		1,	1,	1,	1,	0,	1,	'LED Domus',		'Y',	7.5,	49.02895828,	-122.8092151),
+(10,	1,	0,	0,	0,	0,	1,	'LED Domus',		'Y',	7.5,	49.02761232,	-122.805421)
 
 GO
 
 INSERT INTO L_POLE (POLE_ID, L_POLE_BULB_TYPE, L_POLE_LUMINARE)
 VALUES
-(1,	'150W HPS'	,	'HPS Cobra Head'	),
-(2,	'150W HPS'	,	'HPS Cobra Head'	),
-(6	,'150W HPS'	,	'HPS Cobra Head'	),
-(7,	'150W HPS'	,	'LED Cobra Head'	),
-(8,	'150W HPS'	,	'HPS Cobra Head'	),
-(9,	'150W HPS'	,	'HPS Decorative'	)
+(1,	'150W HPS'	,'HPS Cobra Head'),
+(2,	'150W HPS'	,'HPS Cobra Head'),
+(6,	'150W HPS'	,'HPS Cobra Head'),
+(7,	'150W HPS'	,'LED Cobra Head'),
+(8,	'150W HPS'	,'HPS Cobra Head'),
+(9,	'150W HPS'	,'HPS Decorative')
 
 GO
 
 INSERT INTO T_POLE(POLE_ID, T_POLE_BUTT, T_POLE_SIGN) VALUES
-(1, 'YES', 'WALKWAY'),
-(2, 'NO', 'LEFT TURN'),
-(3, 'YES', 'WALKWAY'),
-(4, 'NO', 'HIGHWAY EXIT'),
-(5, 'NO', 'LEFT TURN'),
-(6, 'YES', 'WALKWAY'),
-(7, 'YES', 'X CROSSING')
+(1, 'YES', 	'WALKWAY'),
+(2, 'NO', 	'LEFT TURN'),
+(3, 'YES', 	'WALKWAY'),
+(4, 'NO', 	'HIGHWAY EXIT'),
+(5, 'NO', 	'LEFT TURN'),
+(6, 'YES', 	'WALKWAY'),
+(7, 'YES', 	'X CROSSING')
 
 GO
 
 INSERT INTO MAINT_RECORD(MAINT_ID, POLE_ID, EMPLOYEE_ID, MAINT_RECORD_DATE, IS_SERVICE, IS_ASSESSMENT) 
 VALUES
-(1, 1, 1, '2001-01-01 00:00:00', 1, 1),
-(2, 2, 2, '2001-01-02 00:00:00', 0, 1),
-(3, 3, 3, '2001-01-03 00:00:00', 1, 0),
-(4, 4, 4, '2001-01-04 00:00:00', 1, 0),
-(5, 5, 5, '2001-01-05 00:00:00', 0, 1),
-(6, 6, 1, '2001-01-10 00:00:00', 1, 0),
-(7, 7, 2, '2001-01-11 00:00:00', 1, 0),
-(8, 5, 3, '2001-02-05 00:00:00', 0, 1),
-(9, 1, 4, '2001-02-05 00:00:00', 0, 1),
-(10, 2, 5, '2001-02-06 00:00:00', 0, 1),
-(11, 3, 1, '2001-02-04 00:00:00', 1, 0),
-(12, 4, 2, '2001-02-08 00:00:00', 1, 0),
-(13, 8, 6, '2001-03-01 00:00:00', 1, 0),
-(14, 9, 7, '2003-03-02 00:00:00', 0, 1),
-(15, 10, 8, '2004-06-01 00:00:00', 0, 1), 
-(16, 4, 9, '2010-11-12 00:00:00', 1, 0),
-(17, 6, 10, '2020-01-02 00:00:00', 1, 0);
+(1, 	1, 	1, 	'2001-01-01 00:00:00', 1, 1),
+(2, 	2, 	2, 	'2001-01-02 00:00:00', 0, 1),
+(3,		3, 	3, 	'2001-01-03 00:00:00', 1, 0),
+(4, 	4, 	4, 	'2001-01-04 00:00:00', 1, 0),
+(5, 	5, 	5, 	'2001-01-05 00:00:00', 0, 1),
+(6, 	6, 	1, 	'2001-01-10 00:00:00', 1, 0),
+(7, 	7, 	2, 	'2019-01-11 00:00:00', 1, 0),
+(8, 	5, 	3, 	'2001-02-05 00:00:00', 0, 1),
+(9, 	1, 	4, 	'2001-02-05 00:00:00', 0, 1),
+(10, 	2, 	5, 	'2001-02-06 00:00:00', 0, 1),
+(11, 	3, 	1, 	'2019-02-04 00:00:00', 1, 0),
+(12, 	4, 	2, 	'2001-02-08 00:00:00', 1, 0),
+(13, 	8, 	6, 	'2001-03-01 00:00:00', 1, 0),
+(14, 	9, 	7, 	'2003-03-02 00:00:00', 0, 1),
+(15, 	10, 8, 	'2004-06-01 00:00:00', 0, 1), 
+(16, 	4, 	9, 	'2010-11-12 00:00:00', 1, 0),
+(17, 	6, 	10, '2020-01-02 00:00:00', 1, 0);
 
 GO
 
 INSERT INTO MAINT_CONDITION (MAINT_ID, MAINT_HAMMER_TEST_RESULT, MAINT_VISUAL_RUST, MAINT_LUMINAIRE_COND, MAINT_ANCHOR_BOLTS_COND, MAINT_PANEL_COND)
 VALUES
-(	1	,	39	,	'Y'	,	2	,	'GOOD'	,	1	),
-(	2	,	39	,	'Y'	,	2	,	'POOR'	,	2	),
-(	3	,	38	,	'Y'	,	1	,	'FAIR'	,	3	),
-(	4	,	41	,	'Y'	,	2	,	'BAD'	,	1	),
-(	5	,	39	,	'Y'	,	3	,	'GOOD'	,	2	),
-(	6	,	43	,	'N'	,	3	,	'POOR'	,	3	),
-(	7	,	38	,	'N'	,	2	,	'FAIR'	,	1	),
-(	8	,	43	,	'N'	,	3	,	'BAD'	,	2	),
-(	9	,	35	,	'N'	,	3	,	'GOOD'	,	3	),
-(	10	,	23	,	'Y'	,	2	,	'FAIR'	,	2	)
+(1	,39	,	'Y'	,	2,	'GOOD',	1),
+(2	,39	,	'Y'	,	2,	'POOR',	2),
+(3	,38	,	'Y'	,	1,	'FAIR',	3),
+(4	,41	,	'Y'	,	2,	'BAD',	1),
+(5	,39	,	'Y'	,	3,	'GOOD',	2),
+(6	,43	,	'N'	,	3,	'POOR',	3),
+(7	,38	,	'N'	,	2,	'FAIR',	1),
+(8	,43	,	'N'	,	3,	'BAD',	2),
+(9	,35	,	'N'	,	3,	'GOOD',	3),
+(10	,23	,	'Y'	,	2,	'FAIR',	2)
+GO
 
 INSERT INTO MAINT_SERVICE (MAINT_ID, MAINT_RELAMP_DATE, MAINT_REPAINT_DATE) VALUES
-(1, '2000-01-01 00:00:00', '2000-01-01 00:00:00'),
-(3, '1998-10-20 00:00:00', '1999-10-04 00:00:00'),
-(4, '1995-12-01 00:00:00', '1998-04-01 00:00:00'),
-(6, '1999-05-07 00:00:00', '1997-05-20 00:00:00'),
-(7, '1994-10-22 00:00:00', '1996-03-17 00:00:00'),
-(11, '1997-04-15 00:00:00', '1999-06-05 00:00:00'),
-(12, '1998-06-04 10:30:00', '1992-01-04 00:00:00'),
-(13, '1999-02-21 00:00:00', '1999-10-12 00:00:00'),
-(16, '1999-04-01 00:00:00', '1998-01-02 00:00:00'),
-(17, '1997-08-21 20:30:00', '1999-11-11 00:00:00')
+(1, 	'2000-01-01 00:00:00', '2000-01-01 00:00:00'),
+(3, 	'1998-10-20 00:00:00', '1999-10-04 00:00:00'),
+(4, 	'1995-12-01 00:00:00', '1998-04-01 00:00:00'),
+(6, 	'1999-05-07 00:00:00', '1997-05-20 00:00:00'),
+(7, 	'1994-10-22 00:00:00', '1996-03-17 00:00:00'),
+(11, 	'1997-04-15 00:00:00', '1999-06-05 00:00:00'),
+(12, 	'1998-06-04 10:30:00', '1992-01-04 00:00:00'),
+(13, 	'1999-02-21 00:00:00', '1999-10-12 00:00:00'),
+(16, 	'1999-04-01 00:00:00', '1998-01-02 00:00:00'),
+(17, 	'1997-08-21 20:30:00', '1999-11-11 00:00:00')
+GO
 
 
 INSERT INTO UPDATE_HISTORY (UPDATE_TIMESTAMP, POLE_ID, EMPLOYEE_ID) 
 VALUES
 ('2000-08-15 10:30:25', 10, 1),
-('2001-10-05 12:21:30', 1, 1),
-('2000-01-03 22:52:33', 2, 2),
-('1999-05-19 19:34:43', 3, 6),
-('1998-04-17 17:43:00', 5, 4),
-('2000-12-13 13:42:43', 7, 3),
-('2000-02-26 13:13:52', 9, 8),
-('2000-09-25 15:34:12', 9, 2),
+('2001-10-05 12:21:30', 1, 	1),
+('2000-01-03 22:52:33', 2, 	2),
+('1999-05-19 19:34:43', 3, 	6),
+('1998-04-17 17:43:00', 5, 	4),
+('2000-12-13 13:42:43', 7, 	3),
+('2000-02-26 13:13:52', 9, 	8),
+('2000-09-25 15:34:12', 9, 	2),
 ('2000-05-21 17:25:23', 10, 7),
-('1999-05-30 10:27:56', 4, 3);
+('1999-05-30 10:27:56', 4, 	3);
+GO
+
+
 
 
 
