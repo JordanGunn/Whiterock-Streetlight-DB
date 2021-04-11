@@ -38,12 +38,12 @@ GROUP BY IS_LIGHT_POLE, IS_TRAFFIC_POLE;
 
 -- 8) Have all poles been checked and maintained in the last year?
 -- Assuming last year is 2020, we can compare the total amount of poles to the amount of poles maintained in 2020
-SELECT COUNT(DISTINCT POLE_ID) AS "Total Poles"
-FROM POLE;
-
-SELECT COUNT(DISTINCT POLE_ID) AS "Total Poles Maintained in 2020"
+SELECT POLE.POLE_ID, MAINT_RECORD_DATE
+FROM POLE
+LEFT JOIN (SELECT POLE_ID, MAINT_RECORD_DATE
 FROM MAINT_RECORD
-WHERE MAINT_RECORD_DATE < '2021-01-01 00:00:00' AND MAINT_RECORD_DATE > '2020-01-01 00:00:00';
+WHERE MAINT_RECORD_DATE < '2021-01-01 00:00:00' AND MAINT_RECORD_DATE > '2020-01-01 00:00:00') AS LAST_YEAR
+ON LAST_YEAR.POLE_ID = POLE.POLE_ID;
 
 -- 9) As the field tech, what is the location of the poles I will be checking?
 -- Assume the field tech was assigned poles to check by pole ID (In this case, 1-5)
