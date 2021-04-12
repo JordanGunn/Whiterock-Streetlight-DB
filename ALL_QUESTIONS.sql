@@ -1,16 +1,19 @@
+USE WHITEROCK_STREETLIGHT;
+
+SELECT * FROM POLE
 
 -- 1) I would like to know how many signal lights exist within a 5m radius of elementary school x.
-SELECT DISTINCT POLE_ID FROM POLE WHERE NEAR_SCHOOL = 1;
+SELECT DISTINCT POLE_ID FROM POLE WHERE POLE_NEAR_SCHOOL = 1;
 
 -- 2) I would like to know how many street lights have traffic signals on them.
-SELECT DISTINCT POLE_ID, POLE_LAT, POLE_LONG FROM POLE WHERE IS_TRAFFIC_POLE = 1;
+SELECT DISTINCT POLE_ID, POLE_LAT, POLE_LONG FROM POLE WHERE POLE_IS_TRAFFIC = 1;
 
 -- 3) I would like to know which streetlights haven’t had any maintenance updates in the last 3 years. 
 SELECT DISTINCT POLE.POLE_ID, MAINT_RECORD.MAINT_RECORD_DATE, POLE.POLE_HGT, POLE.POLE_LAT, POLE.POLE_LONG
 FROM POLE
 JOIN MAINT_RECORD
 ON MAINT_RECORD.POLE_ID = POLE.POLE_ID
-WHERE MAINT_RECORD.IS_SERVICE = 1 AND MAINT_RECORD.MAINT_RECORD_DATE < '2018-01-01 00:00:00'
+WHERE MAINT_RECORD.MAINT_TYPE = 'S' AND MAINT_RECORD.MAINT_RECORD_DATE < '2018-01-01 00:00:00'
 
 -- 4) I would like to find out which technician creates the maintenance report for the streetlight on street X at the coordinates (lambda, phi).
 SELECT MAINT_RECORD.EMPLOYEE_ID, EMPLOYEE.EMPLOYEE_FNAME, EMPLOYEE.EMPLOYEE_LNAME, POLE_LAT, POLE_LONG
@@ -32,15 +35,15 @@ SELECT COUNT(DISTINCT POLE_ID) AS "Total Poles"
 FROM POLE;
 -- 7) How many of each type/combination?
 -- We can count each type and combination separately
-SELECT COUNT(DISTINCT POLE_ID) AS "Number of Poles", IS_LIGHT_POLE, IS_TRAFFIC_POLE
+SELECT COUNT(DISTINCT POLE_ID) AS "Number of Poles", POLE_IS_LIGHT, POLE_IS_TRAFFIC
 FROM POLE
-GROUP BY IS_LIGHT_POLE, IS_TRAFFIC_POLE;
+GROUP BY POLE_IS_LIGHT, POLE_IS_TRAFFIC;
 
 -- 8) Have all poles been checked and maintained in the last year?
 -- Assuming last year is 2020, we can compare the total amount of poles to the amount of poles maintained in 2020
 SELECT POLE.POLE_ID, MAINT_RECORD_DATE
 FROM POLE
-LEFT JOIN (SELECT POLE_ID, MAINT_RECORD_DATE
+JOIN (SELECT POLE_ID, MAINT_RECORD_DATE
 FROM MAINT_RECORD
 WHERE MAINT_RECORD_DATE < '2021-01-01 00:00:00' AND MAINT_RECORD_DATE > '2020-01-01 00:00:00') AS LAST_YEAR
 ON LAST_YEAR.POLE_ID = POLE.POLE_ID;
